@@ -1,0 +1,13 @@
+doctype html
+html
+  include head.jade
+  body  
+    // Navigation
+    include navigation.jade
+    if msg != ''
+       .messageHeader.alert.alert-success.text-center(role='alert')= msg
+
+    //contenu page
+    include main.jade
+    include playAsGuestForm.jade
+  include footer.jade

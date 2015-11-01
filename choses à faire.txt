@@ -1,0 +1,62 @@
+
+
+-------------  A FAIRE ----------------
+
+Voir si l'entree dans la room du jeu (+ chat privée) fait quitter le chat public : non
+
+quand le joueur est en train de jouer désactiver les boutons decline et challenge ! 
+
+- gerer les erreurs pour eviter plantage serveur
+
+
+- si guest ferme sa fenetre deconnection non detectée.
+
+( si plus de 3 parties en cours mettre message d'attente )	
+
+- Afficher le nombre de parties en cours (à coté de 'connected users')
+
+- pb : apres une partie si un membre recharge la page cela envoit un message 'winner' à tous les autres joueurs... 
+
+- pb : quand un joueur resign (ou rafraichis sa page) cela ferme toute les autres parties en cours !!!! (ok si navigateurs differents, à tester en condition reelle)
+
+- si le client/ ne recoit pas de ping du server pendant plus de 10 secondes on le deconnecte (reinitialisation)
+
+- jeu à tester sous safari sur MAC ASAP !!!
+
+
+Evolutions:
+Supprimer la connection guest.
+pour savoir si un utilisateur n'est plus connecté : ecouter ses ping.
+Si dernier ping recu il y plus de 2 secondes alors l'utilisateur est deconnecté.
+
+
+Non prioritaire :
+
+- ajouter photo pour les joueurs ( ou choix raquette )
+- ajouter un tableau avec la liste des meilleurs joueurs ( variables : nombre de partie gagnée et moyenne ecart de score )
+- ajouter un son quand un chalenge arrive
+- Sauver les 10 derniers messages pour pouvoir les afficher à l'ouverture. 
+- si un guest gagne lui proposer de s'insrire pour enregistrer son score
+- white noise tv screen 
+
+-------------- FAIT --------------
+- Quand on joue avec le serveuer il faut desativer le bouton challenge du serveur
+- pouvoir joueur contre l'ordi 
+- interdire les caractere speciaux dans le pseudo car sinon ca bug 
+- Page SCORE : afficher un tableau avec la liste des parties + details parties
+- changer look score (pixeliser)
+- Connexion : guest ou membre 
+        guest :  peut choisir son pseudo si dispo ( pas de session, perd la connexion si change de page )
+        membre: peut choisir son pseudo si dispo et son mot de passe, ne perd pas la connexion si change de page sur le site )
+- organisation mono site à la racine avec express et socket.io.
+- changer font
+- Creer liste joueurs connectés ( avatar + pseudo + voyant rouge/vert + bouton Defier ou Partie en cours avec X...  )  
+- gerer les connexions/deconnexion au chat publique.
+- decaler score de droite un peu vers la gauche !
+- bouton playing à aggrandir 
+- Creer bdd ( collections  users et scores)
+     users: pseudo, login , date
+     scores:  Joueur1, score1, Joueur2, score2, datePartie, duréePartie, winner 
+- n'afficher le private chat et le bouton resign que si une partie est en courS
+- ajouter son.
+- bug oscillation sur le bord haut : à priori clos ( à confirmer sur la durée)
