@@ -1,12 +1,14 @@
 "use strict";
 
 //var pongGame = pongGame || {};
+var url = window.location.href;
 
-//var socket = io.connect('http://localhost:8080');//maison
-
-//var socket = io.connect('http://192.168.104.209:8080');//ifocop
-
-var socket = io.connect('https://pong.felixdebon.fr:443');//prod
+if ( url.indexOf("localhost:8080") ){ 
+    var socket = io.connect('http://localhost:8080');//maison
+    //var socket = io.connect('http://192.168.104.209:8080');//ifocop
+}else{
+    var socket = io.connect('https://pong.felixdebon.fr:443');//prod    
+}
 
 var pseudo = '';//utilisée avec ce nom dans Navigation.jade
 var speech = '';

@@ -34,6 +34,8 @@
 
 "use strict";
 
+console.log('__dirname:'+__dirname);
+
 var port = process.env['PORT'] || 8080;
 //var http = require('http');//appel de la biblio http de nodeJS
 var path = require('path');
@@ -765,18 +767,22 @@ io.on('connection', function (socket){
     });
  
     socket.on('comeBackAfterAGame', function (pseudo) {
-        console.log('comeBackAfterAGame: retour de ' + pseudo);
-        socket.pseudo = pseudo;
-        users[pseudo].dispo = true;
-        socket.broadcast.emit('updatePublicChat', 'SERVER', socket.pseudo + ' is back');
-        // update the list of users in chat, client-side  
-        io.sockets.emit('updatePublicUsers', users);//envoie à tous les clients connectés 
+        if ( typeof pseudo != 'undefined' ){
+            console.log('comeBackAfterAGame: retour de ' + pseudo);
+            socket.pseudo = pseudo;
+            users[pseudo].dispo = true;
+            socket.broadcast.emit('updatePublicChat', 'SERVER', socket.pseudo + ' is back');
+            // update the list of users in chat, client-side  
+            io.sockets.emit('updatePublicUsers', users);//envoie à tous les clients connectés 
+        }   
     });   
     
     socket.on('indispo', function (pseudo) {
-        users[pseudo].dispo = false;
-        socket.broadcast.emit('updatePublicChat', 'SERVER', pseudo + ' is playing...');
-        io.sockets.emit('updatePublicUsers', users);
+        if ( typeof pseudo != 'undefined' ){
+            users[pseudo].dispo = false;
+            socket.broadcast.emit('updatePublicChat', 'SERVER', pseudo + ' is playing...');
+            io.sockets.emit('updatePublicUsers', users);
+        }
     });
     
     socket.on('sendPublicMsg', function (message) {
