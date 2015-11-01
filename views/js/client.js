@@ -956,6 +956,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 
 	//le serveur dit au client de jouer un son  
 	socket.on('bruitage', function(son,volume){
+        //console.log('son='+son);
         playBruitage(son, volume);
 	});	
 

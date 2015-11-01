@@ -5,7 +5,8 @@
     "httpOnly": true,
     "path": "/"
   },
-  "estConnecte": true,
-  "login": "toto1111",
-  "__lastAccess": 1446409920310
+  "estConnecte": false,
+  "login": "",
+  "__lastAccess": 1446412341420,
+  "uid": 1446412340892
 }
