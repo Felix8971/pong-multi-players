@@ -3,6 +3,8 @@
 
 I developed this web site in javascript with Node JS, Socket.io, Mongo DB, Bootstrap, Jade and Jquery.
 
+You can test the web site here: http://www.felixdebon.fr/pong.home
+
 ### Pre-requirements
 
 - node & npm & mongodb installed
