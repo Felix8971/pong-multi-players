@@ -1,37 +1,4 @@
 
-/*
- -- Choses à faire dans mongo dans avant de lancer le server nodejs ----
- 
- set path = %PATH%;C:\Program Files\MongoDB\Server\3.0\bin
- 
- Faire un  "mongod.exe --dbpath C:\devjs\mongodata"
- 
- use blog;//va creer la base blog si elle n'existe pas 
- db;//pour verifier qu'on est bien sur la base blog
- db.articles.insert( {titre:'Premier titre', corps:'corps article 1'} );//on insert un 1er doc dans la collection articles de la base blog 
- db.articles.find({});//on verifie si le document a bien été inseré
- db.articles.insert( {titre:'Deuxieme titre', corps:'corps article 2'} ); 
- db.articles.insert( {titre:'Article de Félix the cat', corps:'miaaaou!'} ); 
-
- db.users.insert( {login:'Lapin', pwd:'carotte'} ); 
-
- 
- use admin;//on passe sur la base admin
- db.createUser( {user:'root', pwd:'123456', roles:['root'] });//on creer un user administrateur
- db.auth('root','123456');//on se connecte en tans que root
- use blog;//on passe sur la base blog
- db.createUser( {user:'monServerNode', pwd:'098765', roles:[{role:'readWrite',db:'blog' }] });//on creer un user qui va servir à node js pour se connecter à mongodb
- show users;
- //on peut alors fermer la fenetre mongo, par contre il faut garder ouverte la fenetre mongodb car c'est notre serveur mongodb (il ppurrait etre situé sur une autre machine)
- 
- Ne pas oublier de faire un 'npm install mongodb' à l'emplacement où se trouve le fichier LectureDasnMongoDB.js
- 
- pour convertir htlm en jade :  http://html2jade.org/
- 
- */
- 
- //http://code4fun.fr/creer-un-site-simple-avec-node-js-express-et-jade/
-
 "use strict";
 
 console.log('__dirname:'+__dirname);
@@ -1014,3 +981,34 @@ io.on('connection', function (socket){
 //});
 
 
+
+/*
+ -- Choses à faire dans mongo dans avant de lancer le server nodejs ----
+ 
+ set path = %PATH%;C:\Program Files\MongoDB\Server\3.0\bin
+ 
+ Faire un  "mongod.exe --dbpath C:\devjs\mongodata"
+ 
+ use blog;//va creer la base blog si elle n'existe pas 
+ db;//pour verifier qu'on est bien sur la base blog
+ db.articles.insert( {titre:'Premier titre', corps:'corps article 1'} );//on insert un 1er doc dans la collection articles de la base blog 
+ db.articles.find({});//on verifie si le document a bien été inseré
+ db.articles.insert( {titre:'Deuxieme titre', corps:'corps article 2'} ); 
+ db.articles.insert( {titre:'Article de Félix the cat', corps:'miaaaou!'} ); 
+
+ db.users.insert( {login:'Lapin', pwd:'carotte'} ); 
+
+ 
+ use admin;//on passe sur la base admin
+ db.createUser( {user:'root', pwd:'123456', roles:['root'] });//on creer un user administrateur
+ db.auth('root','123456');//on se connecte en tans que root
+ use blog;//on passe sur la base blog
+ db.createUser( {user:'monServerNode', pwd:'098765', roles:[{role:'readWrite',db:'blog' }] });//on creer un user qui va servir à node js pour se connecter à mongodb
+ show users;
+ //on peut alors fermer la fenetre mongo, par contre il faut garder ouverte la fenetre mongodb car c'est notre serveur mongodb (il ppurrait etre situé sur une autre machine)
+ 
+ Ne pas oublier de faire un 'npm install mongodb' à l'emplacement où se trouve le fichier LectureDasnMongoDB.js
+ 
+ pour convertir htlm en jade :  http://html2jade.org/
+ 
+ */
