@@ -15,7 +15,7 @@ html
           h2 Registered games
             span#nbrRegisteredGames= ' (' + nbrDoc + ')'
           #games
-            table-responsive
+            .table-responsive
                 table#tableGames.table.table-bordered
                     thead
                       tr.active
@@ -36,14 +36,5 @@ html
                             td= val.date
                             td= val.time                            
                             td= val.winner
-                            
-        //.col-md-4
-        //  h2 Best players ranking
-        //  #bestPlayers
-        //      table-responsive
-        //          table#tablebestPlayers.table.table-bordered  
-        //            tr
-        //              td
-        //                val.Player0
 
-  include footer.jade
+    include footer.jade

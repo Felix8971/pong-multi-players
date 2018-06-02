@@ -1,3 +1,0 @@
-Lien de vérification du certificat :
-
-pong.felixdebon.fr :  https://www.gandi.net/ssl/secured/pong.felixdebon.fr/218537/3f71e65dfb

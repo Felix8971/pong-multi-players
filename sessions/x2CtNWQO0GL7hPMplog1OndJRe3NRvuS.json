@@ -1,0 +1,12 @@
+{
+  "cookie": {
+    "originalMaxAge": null,
+    "expires": null,
+    "httpOnly": true,
+    "path": "/"
+  },
+  "uid": 1454797795280,
+  "__lastAccess": 1454797805267,
+  "estConnecte": true,
+  "login": "Felix"
+}

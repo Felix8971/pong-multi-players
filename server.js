@@ -55,6 +55,8 @@ var server = require('http').Server(app);
 
 // voir https://github.com/xpepermint/socket.io-express-session/tree/master/example
 var ios = require('socket.io-express-session');
+
+// Chargement de socket.io (connexion "temps réel" pour ouvrir un tunnel via les WebSockets grâce à socket.io)
 var io = require('socket.io')(server);
 io.use(ios(session)); // session support
 
@@ -139,14 +141,14 @@ app.post('/signIn',function(req, res){
         }else{   
             //on verifie que le login req.body.login est dispo
             var cursor = collections.find({login:req.body.login}).toArray(function(err, documents){
-                //var nbrDoc = documents.length; console.log('nbrDoc='+nbrDoc); 
+                var nbrDoc = documents.length; console.log('nbrDoc='+nbrDoc); 
                 if ( documents.length > 0 ){
                     msg =  'Another account already uses the pseudo you entered. Please choose a different one, be original !';
                     res.render('formulaireSignIn', { estConnecte: false, msg: msg });
                 }else{
-                    console.log('login:'+req.body.login);
-                    console.log('pwdverif:'+req.body.pwdverif);
-                    console.log('pwd:'+req.body.pwd);
+                     console.log('login:'+req.body.login);
+                     console.log('pwdverif:'+req.body.pwdverif);
+                     console.log('pwd:'+req.body.pwd);
                     if ( req.body.pwdverif != req.body.pwd ){
                        msg = 'Password and confirmation password not equal after submit !';
                        res.render('formulaireSignIn', { estConnecte: false, msg:msg});
@@ -208,8 +210,6 @@ app.get('/deconnexion', function (req,res,next) {
    res.redirect('/'); 
 });
 
-
-
 app.get('/404', function (req,res,next) {
   next();// L'appel à next() indique qu'on souhaite continuer la chaîne des middlewares
   // Si on interrompt ici cette chaîne, sans avoir renvoyé de réponse au client, il n'y aura
@@ -217,8 +217,8 @@ app.get('/404', function (req,res,next) {
 });
 
 //Gestion des erreurs 
-//Dans le code suivant, situé après toutes les autres routes, nous créons une erreur 
-//dans le cas d'une url non présente puis nous ajoutons l'en-tête 404 avant de faire le rendu de la page 404 créée par ailleurs.
+//Dans le code suivant, situé après toutes les autres routes, nous créons une erreur dans le 
+//cas d'une url non présente puis nous ajoutons l'en-tête 404 avant de faire le rendu de la page 404 créée par ailleurs.
 app.use(function (req,res, next) {
 	res.status(404);
 
@@ -261,8 +261,6 @@ db.connect(url, function(err){
 //io.sockets.emit(type de l'évenement, data1, data2) : envoie à tous les clients connectés un événement (une chaine) et deux paramètres pouvant contenir des données
 //socket.broadcast.emit(type de l'évenement, data1, data2) : envoie à tous les clients connectés sauf au client courant (l'emetteur) un événement (une chaine) et deux paramètres 
 
-// Chargement de socket.io (connexion "temps réel" pour ouvrir un tunnel via les WebSockets grâce à socket.io)
-//var io = require('socket.io').listen(httpServer);
 
 // Initialisation variables du jeu
 var TO_RADIANS = Math.PI/180; 
@@ -316,7 +314,7 @@ var norme = function(vecteur){
 }
 //objet contenant la liste des utilisateurs presents sur le site
 var users = {};
-//on affichera le serveur ou 'CPU' dans la liste des user connectés 
+//on affichera le serveur dans la liste des user connectés 
 users['LeServer'] = { pseudo:'LeServer', sid:'', dispo:true, avatar:'cpu.png', speech:'Je suis le server, c\'est moi le boss ici !' };
 
 var NBR_ROOM = 3;//à changer suivant capacité du server 
@@ -496,7 +494,7 @@ var victory = function(i,j){
 }
 
 
-var recallDelay = 20;// en ms
+var recallDelay = 20;//20 (en ms)
 
 var step = 2;
 
@@ -508,7 +506,7 @@ var animation = function(i){
     etatGame[i].compteur++;
      
     if ( etatGame[i].compteur > 50 ){//Retarde le depart de la balle
-        if ( etatGame[i].compteur === 51 ){ io.in(i).emit('bruitage', 'newBall', 1); }  
+        if ( etatGame[i].compteur === 51 ){ io.in(i).emit('bruitage', {son:'newBall', volume:1, room:i} ); }  
         etatGame[i].balle.x += etatGame[i].balle.dx;
         etatGame[i].balle.y += etatGame[i].balle.dy;
         
@@ -522,11 +520,11 @@ var animation = function(i){
         if ( etatGame[i].balle.y < 0 ){
             etatGame[i].balle.dy = -etatGame[i].balle.dy;
             etatGame[i].balle.y = 0;//evite l'effet d'oscillation sur le bord haut
-            io.in(i).emit('bruitage', 'bounceWall', 1);
+            io.in(i).emit('bruitage', {son:'bounceWall', volume:1, room:i});
         } else if ( etatGame[i].balle.y > CANVAS_HEIGHT - 16 ){
             etatGame[i].balle.dy = -etatGame[i].balle.dy;
             etatGame[i].balle.y = CANVAS_HEIGHT - 16;//evite l'effet d'oscillation sur le bord bas
-            io.in(i).emit('bruitage', 'bounceWall', 1);
+            io.in(i).emit('bruitage', {son:'bounceWall', volume:1, room:i});
             //playBruitage('bounceWall');
         }            
         //console.log('balle.x: '+etatGame[i].balle.x + ' balle.y: '+etatGame[i].balle.y + ' paddles[0].x: '  + paddles[0].x + ' paddles[0].y: '  + paddles[0].y) ;
@@ -556,7 +554,7 @@ var animation = function(i){
                     //}
                 }
                 //Faire rebond different suivant mvt du paddle ?
-                io.in(i).emit('bruitage', 'bouncePaddle', 0.3);
+                io.in(i).emit('bruitage', {son:'bouncePaddle', volume:0.3, room:i} );
                 
             }
         } 
@@ -584,7 +582,7 @@ var animation = function(i){
                     //}
                 }
                 //playBruitage('bouncePaddle', 0.3);
-                io.in(i).emit('bruitage', 'bouncePaddle', 0.3);
+                io.in(i).emit('bruitage', {son:'bouncePaddle', volume:0.3, room:i} );
             }
             
           
@@ -668,11 +666,11 @@ var animation = function(i){
 	var delais = (new Date()).getTime() - startTime;
 	//io.sockets.emit('updateGame', etatGame[i]);
 	if ( delais >= recallDelay ){//on rappelle la MAJ sur le champ
-		io.in(i).emit('updateGame', etatGame[i]);
+		io.in(i).emit('updateGame', {x:etatGame[i].balle.x,y:etatGame[i].balle.y});
 		animation(i);
 		console.log("delais >= "+ recallDelay +"! delais=" + delais)
 	}else{// sinon on rappelle la MAJ un peu plus tard en essayant de conserver un ecart de 20 ms entre chaque appel
-		io.in(i).emit('updateGame', etatGame[i]);
+		io.in(i).emit('updateGame', {x:etatGame[i].balle.x,y:etatGame[i].balle.y});
 		setTimeout(function(){
 			animation(i);
 		}, recallDelay - delais);

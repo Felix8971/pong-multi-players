@@ -223,7 +223,7 @@ td, th {
     display:none;
 }
 
-#molette{
+#molette, #molette-img{
     position:absolute;
     top:58px;
     left:420px;

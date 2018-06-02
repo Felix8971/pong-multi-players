@@ -1,6 +1,8 @@
 // Page Content
 .container
     // Heading Row
+
+    
     .row
       .col-lg-12
         #phraseAccueil.well.text-center  Play pong online and make new friends !
@@ -18,7 +20,7 @@
           #SoundOffBtn( data-toggle='tooltip', data-placement='top', title='Sound Off/On')
             img(src='img/pos_Off.png', id='pos_Off' alt='pos_Off') 
           #molette( data-toggle='tooltip', data-placement='top', title='channels')
-            img(src='img/molette.png', id='molette' alt='molette') 
+            img(src='img/molette.png', id='molette-img' alt='molette') 
           canvas#gameCanvas(width='600', height='439')
             span.bigRed Votre navigateur ne supporte pas le canvas, mettez le a jour !
          
@@ -34,6 +36,17 @@
           
 
     hr
+    #fb-root
+    script.
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    // Your share button code
+    .fb-share-button(data-href='http://pong.felixdebon.fr', data-layout='button_count') share
 
     //Liste des challenges  
     .row
@@ -42,7 +55,7 @@
           span#nbrChallenges 0
           |)
         #challenges
-            table-responsive
+            .table-responsive
                 table#tableChallenges.table  
                   tr#pasDeDefis
                     td No ongoing challenges...
@@ -51,7 +64,7 @@
           span#nbrOngoingGames 0
           |)
         #ongoingGames
-            table-responsive
+            .table-responsive
                 table#tableOngoingGames.table.table-bordered  
                   tr#noOngoingGames
                     td No ongoing games...
@@ -63,7 +76,7 @@
           span#nbrUsers 0
           |)
         #publicUsers
-            table-responsive
+            .table-responsive
                 table#tableUsers.table
       .col-md-6
         h1 Public chat
@@ -102,4 +115,15 @@
         a.btn.btn-default(href='https://fr.wikipedia.org/wiki/Node.js', target="_blank") More Info
 
 
-     
+        script.
+          var angleMolette = 38;
+          $("#molette-img").rotate({angle:angleMolette});
+          $("#molette").offset().left = 481;
+          $("#molette").offset().top = 58; 
+
+          $('#molette').click( function() {  
+              angleMolette  += 27.692307692;  
+              $("#molette-img").rotate({angle:angleMolette});
+              $("#molette").offset().left = 481;
+              $("#molette").offset().top = 58; 
+          });

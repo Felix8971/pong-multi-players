@@ -1,6 +1,5 @@
 "use strict";
 
-//var pongGame = pongGame || {};
 var url = window.location.href;
 console.log('url='+url);
 if ( url.indexOf("localhost:8080") >=0  ){ 
@@ -58,41 +57,41 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
         return str;
     }
     
-    //validation modal pour recuperation pseudo guest
-    $('#sendModalBtn').click( function() {  
-        console.log('recipient-name='+$('#recipient-name').val())
-        pseudo = $('#recipient-name').val().trim();
-        //pseudo = replaceAll(' ','_',pseudo);
-        speech = $('#message-text').val().trim();
-        console.log(pseudo);
+ //    //validation modal pour recuperation pseudo guest
+ //    $('#sendModalBtn').click( function() {  
+ //        console.log('recipient-name='+$('#recipient-name').val())
+ //        pseudo = $('#recipient-name').val().trim();
+ //        //pseudo = replaceAll(' ','_',pseudo);
+ //        speech = $('#message-text').val().trim();
+ //        console.log(pseudo);
 
-        var validator = validerIdentifiants(pseudo,'xxxxx');
-        if ( !validator.valid ){
-             $('#ErrorMsgModal').empty();
-             $('#ErrorMsgModal').append(validator.msg);
-             setTimeout(function(){$('#playAsGuestModal').modal('show')}, 500);     
-        }else{//pseudo ok
-            $('#publicEnvoyer').show();
-            $('#publicMsg').show();
-            socket.emit('addUser', pseudo, speech);//le client envoie au serveur le pseudo saisi  
-            //$('#login').empty();//vide le h2 du login  
-            //$('#login').append('Hi ' + pseudo + '! Welcome in pong !');
-        }        
-	});
+ //        var validator = validerIdentifiants(pseudo,'xxxxx');
+ //        if ( !validator.valid ){
+ //             $('#ErrorMsgModal').empty();
+ //             $('#ErrorMsgModal').append(validator.msg);
+ //             setTimeout(function(){$('#playAsGuestModal').modal('show')}, 500);     
+ //        }else{//pseudo ok
+ //            $('#publicEnvoyer').show();
+ //            $('#publicMsg').show();
+ //            socket.emit('addUser', pseudo, speech);//le client envoie au serveur le pseudo saisi  
+ //            //$('#login').empty();//vide le h2 du login  
+ //            //$('#login').append('Hi ' + pseudo + '! Welcome in pong !');
+ //        }        
+	// });
     
-    $('#recipient-name').keypress(function(event) {  
-		if(event.which === 13) {//touche enter  
-            event.preventDefault();    
-            $('#sendModalBtn').focus().click();
-		}  
-	}); 
+ //    $('#recipient-name').keypress(function(event) {  
+	// 	if(event.which === 13) {//touche enter  
+ //            event.preventDefault();    
+ //            $('#sendModalBtn').focus().click();
+	// 	}  
+	// }); 
     
-    $('#message-text').keypress(function(event) {  
-		if(event.which === 13) {//touche enter  
-            event.preventDefault();    
-            $('#sendModalBtn').focus().click();
-		}  
-	});
+ //    $('#message-text').keypress(function(event) {  
+	// 	if(event.which === 13) {//touche enter  
+ //            event.preventDefault();    
+ //            $('#sendModalBtn').focus().click();
+	// 	}  
+	// });
     
 	socket.on('pseudoDispo', function() {
         //alert('pseudoDispo');
@@ -343,7 +342,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 			socket.emit('sendPublicMsg', message );//j'envoi au serveur le contenu de l'input d'id = data 
 			$('#publicMsg').val('');
 		}else{
-            alert('You\'re not connected. Clic play on the menu bar !');
+            alert('You\'re not connected !');
         }
 	});
 	
@@ -378,7 +377,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 	//Au clic sur le bouton, envoyer un message de type "sendMessage" au serveur
 	$('#privateEnvoyer').click(function () {
         if ( !pseudo ){
-            alert('You\'re not connected. Clic play on the menu bar !');
+            alert('You\'re not connected !');
         }else{
             if ( gameIsOpen ){
                 derniereActiviteeConnue = (new Date()).getTime();
@@ -618,16 +617,22 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
         //console.log('x:'+ event.clientX + ' y:'+event.clientY);    
     }
  
-    //var t = (new Date()).getTime(), prv_t;
+    var t = (new Date()).getTime(), t0 = 0;
      
+    //var lastPaddleX, lastPaddleY;
+
+
 	//Quand on bouge la souris on envoit sa position au serveur 
 	var onMousemoveEmit = function(event){
         //prv_t = t; 
-        //t = (new Date()).getTime();
-        //console.log('t-prv_t='+(t-prv_t));
+        t = (new Date()).getTime();
         getPaddlePos(event);
-        socket.emit('updatePaddle', {x:myPaddle.X, y:myPaddle.Y, side:myPaddle.Side} );
-        
+        //if ( lastPaddleX )
+        if ( t > t0 + 150){
+            //console.log('t-prv_t='+(t-prv_t));
+            socket.emit('updatePaddle', {x:myPaddle.X, y:myPaddle.Y, side:myPaddle.Side} );
+            t0 = t; 
+        }
 	}; 
 	 
 	
@@ -709,8 +714,8 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
             //des que le serveur envoit une mise à jour on met à jour de l'objet game 
             socket.on('updateGame', function(serverEtatGame){
                 //console.log('recoit updateGame');
-                etatGame.balle.x = serverEtatGame.balle.x;
-                etatGame.balle.y = serverEtatGame.balle.y;
+                etatGame.balle.x = serverEtatGame.x;
+                etatGame.balle.y = serverEtatGame.y;
             });
             
             //Je recois du serveur la position de mon adversaire  
@@ -730,20 +735,14 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 	};
 	
 	$('#playBtn').click( function() {  
-        //if ( typeOpponent === 'human'){
-            //envoyer le clic au server
-            socket.emit('ClicPlay', '');
-            hideAllBtn();
-            $('#wait').show();//Afficher message 'wait for your opponent to clic play' si le server a enregisdter un seul clic
-            $('#resignBtn').show();
-            // le server devra incrementer une variable nbClicPlay, dès que nbClicPlay === 2 le 
-            // server envera un emit aux clients pour dire que la partie commence
-            // à reception de ce message lancer la fontion LancerJeu() qui va lancer l'animation 
-        /*}else{
-            //Lancement du jeu en local contre la machine
-            hideAllBtn();
-            
-        }*/
+        //envoyer le clic au server
+        socket.emit('ClicPlay', '');
+        hideAllBtn();
+        $('#wait').show();//Afficher message 'wait for your opponent to clic play' si le server a enregisdter un seul clic
+        $('#resignBtn').show();
+        // le server devra incrementer une variable nbClicPlay, dès que nbClicPlay === 2 le 
+        // server envera un emit aux clients pour dire que la partie commence
+        // à reception de ce message lancer la fontion LancerJeu() qui va lancer l'animation 
 	 });
 
 	$('#SoundOnBtn').click( function() {  
@@ -768,10 +767,14 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 	});
 
 	$('#resignBtn').click( function() {  
+
         if ( gameIsOpen ){  
             if ( confirm('Are you sure you want to resign and let your opponent win ?') ){
                 //victory(Math.abs(myPaddle.Side-1));//victoire de mon adversaire
                 socket.emit('resign', Math.abs(myPaddle.Side-1));
+                //On supprime la gestion de l'évènement click car on va 
+                //rappeller la meme fonction animation au prochain niveau 
+                $(document).off('mousemove');  
                 //reinitGame();
                 //chatIsOpen = false;
             }
@@ -781,17 +784,17 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 	});
 
 
-    var angleMolette = 38;
-    $("#molette img").rotate({angle:angleMolette});
-    $("#molette").offset().left = 481;
-    $("#molette").offset().top = 58; 
+    // var angleMolette = 38;
+    // $("#molette-img").rotate({angle:angleMolette});
+    // $("#molette").offset().left = 481;
+    // $("#molette").offset().top = 58; 
 
-    $('#molette').click( function() {  
-        angleMolette  += 27.692307692;  
-        $("#molette img").rotate({angle:angleMolette});
-        $("#molette").offset().left = 481;
-        $("#molette").offset().top = 58; 
-    });
+    // $('#molette').click( function() {  
+    //     angleMolette  += 27.692307692;  
+    //     $("#molette-img").rotate({angle:angleMolette});
+    //     $("#molette").offset().left = 481;
+    //     $("#molette").offset().top = 58; 
+    // });
 
 	
 	var hideAllBtn = function(){
@@ -869,6 +872,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
                 msg = 'You lose the game !';
                 playBruitage('gameOver');
             }
+
             //afficher WIN + 'play again' et 'Reset' du coté du joueur qui a gagné
             /*if ( winnerSide === 1 ){//Le joueur de droite a gagné
                 afficheText('WIN', CANVAS_WIDTH/2 + 50 , CANVAS_HEIGHT/2, 'white', 100, 1);
@@ -893,6 +897,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 	socket.on('winner', function(winnerSide){
         //alert(pseudo + 'recoit winner');
         console.log(pseudo + 'recoit winner');
+         $(document).off('mousemove');  
         victory(winnerSide);
         //$('#privateChatCadre').css({opacity:0.5});
         $("#privateChatCadre").hide();
@@ -918,7 +923,7 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
             myPaddle.H = CANVAS_HEIGHT/8;
             myPaddle.W = CANVAS_HEIGHT/25;
             
-            //game etant definie je peux commencer à mettre à jour game.myPaddle.y si la souris bouge
+            //game etant definie je peux commencer à mettre à jour game.myPaddle si la souris bouge
             $(document).mousemove(onMousemoveEmit);
             //$('#privateChatCadre').css({opacity:1});
             //$("#privateChatCadre").animate({ height: 'toggle' },2000);
@@ -959,9 +964,11 @@ $(function(){//on encapsule dans une fonction anonyme pour isoler le code du sco
 
 
 	//le serveur dit au client de jouer un son  
-	socket.on('bruitage', function(son,volume){
-        //console.log('son='+son);
-        playBruitage(son, volume);
+	socket.on('bruitage', function(data){
+        if ( gameIsOpen && data.room === idRoom ){
+            //console.log('son='+son);
+            playBruitage(data.son, data.volume);
+        }
 	});	
 
     /*
